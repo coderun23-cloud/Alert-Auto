@@ -66,169 +66,83 @@ def save_prev(data):
     with open(STATE_FILE, "w") as f: json.dump(data, f, indent=4)
 
 def send_alert(mismatches):
-
     msg = MIMEMultipart()
-
-    # Dynamic subject based on the number of updates
-
+    # Dynamic subject
     msg["Subject"] = f"🚀 ACTION REQUIRED: {len(mismatches)} Network Appliance Updates Available"
-
     msg["From"] = f"Network Monitor <{EMAIL_CONFIG['user']}>"
-
     msg["To"] = EMAIL_CONFIG["to"]
 
-
-
-    # Metadata for the footer
-
+    # Metadata
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     hostname = "ubu-01" 
 
-
-
-    # 1. Start of HTML and Table Header
-
+    # 1. HTML Header and Styling
     html = f"""
-
     <html>
-
-
-    <body style="font-family: Arial; padding: 20px; background-color: #f4f4f4;">
-        <div style="max-width: 600px; margin: auto; background: white; border: 1px solid #ddd; border-radius: 12px; overflow: hidden;">
-            <div style="background-color: #004a99; color: white; padding: 25px; text-align: center;">
-                <h2 style="margin: 0;">Appliance Updates Detected</h2>
-
-
     <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f7f9; color: #333;">
-
         <div style="max-width: 650px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e1e4e8;">
-
             <div style="background: linear-gradient(135deg, #004a99 0%, #002d5f 100%); color: white; padding: 30px; text-align: center;">
-
                 <div style="font-size: 40px; margin-bottom: 10px;">🔔</div>
-
                 <h2 style="margin: 0; font-weight: 600; letter-spacing: 0.5px;">Network Update Advisory</h2>
-
                 <p style="margin: 5px 0 0; opacity: 0.8; font-size: 14px;">Outdated firmware detected on critical infrastructure</p>
-
-
             </div>
-
             <div style="padding: 30px;">
-
                 <p style="font-size: 16px; line-height: 1.6;">Hello Admin,</p>
-
                 <p style="font-size: 15px; line-height: 1.6; color: #555;">
-
                     The automated scan on <strong>{hostname}</strong> has identified versions that are behind the latest vendor releases.
-
                 </p>
-
                 <table style="width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 20px; border: 1px solid #edf2f7; border-radius: 8px; overflow: hidden;">
-
                     <thead>
-
                         <tr style="background-color: #f8fafc;">
-
                             <th style="padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; color: #64748b; border-bottom: 2px solid #edf2f7;">Appliance</th>
-
                             <th style="padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; color: #64748b; border-bottom: 2px solid #edf2f7;">Running</th>
-
                             <th style="padding: 15px; text-align: left; font-size: 12px; text-transform: uppercase; color: #64748b; border-bottom: 2px solid #edf2f7;">Available</th>
-
                         </tr>
-
                     </thead>
-
                     <tbody>
-
     """
 
-
-
-    # 2. Add a single row for each mismatch (No duplication here)
-
+    # 2. Loop through mismatches to add rows
     for m in mismatches:
-
         html += f"""
-
                         <tr>
-
                             <td style="padding: 18px; border-bottom: 1px solid #edf2f7;">
-
                                 <span style="font-weight: 700; color: #1e293b;">{m['vendor'].upper()}</span>
-
                             </td>
-
                             <td style="padding: 18px; border-bottom: 1px solid #edf2f7; color: #64748b; font-family: 'Courier New', monospace;">
-
                                 {m['current']}
-
                             </td>
-
                             <td style="padding: 18px; border-bottom: 1px solid #edf2f7;">
-
                                 <span style="background-color: #fef3c7; color: #92400e; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 13px; border: 1px solid #fde68a;">
-
                                     🚀 {m['latest']}
-
                                 </span>
-
                             </td>
-
                         </tr>
-
         """
 
-
-
-    # 3. Close Table and add Footer
-
+    # 3. Add the single Footer and close all tags
     html += f"""
-
                     </tbody>
-
                 </table>
-
                 <div style="margin-top: 30px; padding: 20px; background-color: #f0f7ff; border-radius: 8px; border-left: 4px solid #004a99;">
-
                     <p style="margin: 0; font-size: 14px; color: #004a99; font-weight: 600;">Next Steps:</p>
-
                     <ul style="margin: 10px 0 0; padding-left: 20px; font-size: 13px; color: #475569;">
-
                         <li>Verify compatibility in the lab environment.</li>
-
                         <li>Download updates from official vendor portals.</li>
-
                     </ul>
-
                 </div>
-
             </div>
-
             <div style="background-color: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #edf2f7;">
-
                 <p style="margin: 0; font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
-
                     Scan completed at {now} | Source: {hostname}
-
                 </p>
-
             </div>
-
         </div>
-
     </body>
-
     </html>
-
     """
 
-    msg.attach(MIMEText(html, "html"))
-
-
-    html += "</table></div></div></body></html>"
+    # 4. Attach ONCE and send
     msg.attach(MIMEText(html, "html"))
 
     with smtplib.SMTP(EMAIL_CONFIG["smtp"], EMAIL_CONFIG["port"]) as server:
