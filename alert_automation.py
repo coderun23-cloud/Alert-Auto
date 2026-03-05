@@ -38,7 +38,7 @@ def run(cmd):
 def scrape_latest():
     """Scrape versions using browser headers to bypass blocks."""
     latest = {}
-    # Modern browser User-Agent
+    # Use 'ua' consistently
     ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
 
     # ISE
@@ -47,11 +47,10 @@ def scrape_latest():
     # DNAC
     latest["dnac"] = run(rf"""curl -sL -A "{ua}" "https://www.cisco.com/c/en/us/td/docs/cloud-systems-management/network-automation-and-management/catalyst-center/2-3-7/release_notes/b_cisco_catalyst_center_237_release_notes.html" | grep -oE "Release 2\.3\.7\.[0-9]+" | awk '{{print $2}}' | sort -Vr | head -1""")
     
-    # CHECKPOINT - Improved to be more resilient
-    # Updated to search specifically for the R82.10 pattern in the Check Point SK page
-    latest["checkpoint"] = run(f'curl -sLk -A "{UA}" "https://support.checkpoint.com/results/sk/sk152052" | grep -oE "R8[0-9]\.[0-9]{{2}}" | grep "82" | head -1')
-     # FTD
+    # CHECKPOINT - Fixed variable {ua} and improved regex stability
+    latest["checkpoint"] = run(rf'curl -sLk -A "{ua}" "https://support.checkpoint.com/results/sk/sk152052" | grep -oE "R8[0-9]\.[0-9]{{2}}" | grep "82" | head -1')
     
+    # FTD
     latest["ftd"] = run(rf"""curl -sLk -A "{ua}" "https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/release-notes/threat-defense/770/threat-defense-release-notes-77.html" | grep -oE "7\.[0-9]\.[0-9]+" | sort -V | tail -1""")
 
     return {k: (v if v else "Not Found") for k, v in latest.items()}
