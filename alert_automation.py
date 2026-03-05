@@ -75,7 +75,7 @@ def send_alert(mismatches):
     <body style="font-family: Arial; padding: 20px; background-color: #f4f4f4;">
         <div style="max-width: 600px; margin: auto; background: white; border: 1px solid #ddd; border-radius: 12px; overflow: hidden;">
             <div style="background-color: #004a99; color: white; padding: 25px; text-align: center;">
-                <h2 style="margin: 0;">Updates Detected</h2>
+                <h2 style="margin: 0;">Appliance Updates Detected</h2>
             </div>
             <div style="padding: 25px;">
                 <table style="width: 100%; border-collapse: collapse;">
