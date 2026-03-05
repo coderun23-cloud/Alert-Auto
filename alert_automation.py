@@ -50,7 +50,7 @@ def scrape_latest():
     latest["checkpoint"] = run(rf"""curl -sL -k -A "{ua}" "https://support.checkpoint.com/results/sk/sk152052" | grep -o "R82\.10" | head -1""")
     
     # FTD
-    latest["ftd"] = run(rf"""curl -sLk -A "{UA}" "https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/release-notes/threat-defense/770/threat-defense-release-notes-77.html" | grep -oE "7\.[0-9]\.[0-9]+" | sort -V | tail -1""")
+    latest["ftd"] = run(rf"""curl -sLk -A "{ua}" "https://www.cisco.com/c/en/us/td/docs/security/secure-firewall/release-notes/threat-defense/770/threat-defense-release-notes-77.html" | grep -oE "7\.[0-9]\.[0-9]+" | sort -V | tail -1""")
 
     return {k: (v if v else "Not Found") for k, v in latest.items()}
 
