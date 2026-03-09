@@ -7,7 +7,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart  # import MIME 
 
 # Configuration
+<<<<<<< HEAD
 STATE_FILE = "prev_versions.json" # specify a file that will be created
+=======
+STATE_FILE = "prev_versions.json"  # used to remember the last seen versions
+>>>>>>> b1741461246f42b97890f1e7abc43a73d107959f
 EMAIL_CONFIG = {
     "to": "ngetachew277@gmail.com",
     "user": "ngetachew277@gmail.com",
@@ -15,6 +19,7 @@ EMAIL_CONFIG = {
     "smtp": "smtp.gmail.com",
     "port": 587
 }
+# email configuration
 
 # Source of Truth
 current_versions = {
@@ -23,6 +28,7 @@ current_versions = {
     "ftd": "7.6.2.1",
     "checkpoint": "R82"
 }
+# current versions
 
 def run(cmd):
     """Executes bash commands with a retry mechanism for network stability."""
@@ -34,7 +40,7 @@ def run(cmd):
         except Exception:
             continue
     return ""
-
+# executes bash commands and I make it loop to retry 2 times in 30 seconds span
 def scrape_latest():
     """Scrape versions using browser headers to bypass blocks."""
     latest = {}
@@ -55,18 +61,21 @@ def scrape_latest():
 
     return {k: (v if v else "Not Found") for k, v in latest.items()}
 
+# scarp websites to get the latest versions
+
 def load_prev():
     if os.path.exists(STATE_FILE):
         try:
             with open(STATE_FILE, "r") as f: return json.load(f)
         except: return {}
     return {}
+    # read content from state file
 
 def save_prev(data):
     with open(STATE_FILE, "w") as f: json.dump(data, f, indent=4)
-
+# write into state file 
 def send_alert(mismatches):
-    msg = MIMEMultipart()
+    msg = MIMEMultipart() # builds a multipurpose internet mail extensions
     # Dynamic subject
     msg["Subject"] = f"🚀 ACTION REQUIRED: {len(mismatches)} Network Appliance Updates Available"
     msg["From"] = f"Network Monitor <{EMAIL_CONFIG['user']}>"
@@ -149,11 +158,11 @@ def send_alert(mismatches):
         server.starttls()
         server.login(EMAIL_CONFIG["user"], EMAIL_CONFIG["pass"])
         server.sendmail(EMAIL_CONFIG["user"], EMAIL_CONFIG["to"], msg.as_string())
-
+# the main function of the program
 def main():
     print("Checking versions...")
-    prev_json = load_prev()
-    latest_web = scrape_latest()
+    prev_json = load_prev()  # previous from the state file
+    latest_web = scrape_latest() # get the latest file
     mismatches = []
 
     for vendor, web_ver in latest_web.items():
