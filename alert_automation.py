@@ -1,6 +1,7 @@
 import subprocess
 import json
 import os
+import socket
 import datetime
 import smtplib
 from email.mime.text import MIMEText
@@ -82,7 +83,7 @@ def send_alert(mismatches):
 
     # Metadata
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    hostname = "ubu-01" 
+    hostname = socket.gethostname()
 
     # 1. HTML Header and Styling
     html = f"""
