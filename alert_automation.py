@@ -7,11 +7,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart  # import MIME 
 
 # Configuration
-<<<<<<< HEAD
-STATE_FILE = "prev_versions.json" # specify a file that will be created
-=======
+
+
 STATE_FILE = "prev_versions.json"  # used to remember the last seen versions
->>>>>>> b1741461246f42b97890f1e7abc43a73d107959f
+
 EMAIL_CONFIG = {
     "to": "ngetachew277@gmail.com",
     "user": "ngetachew277@gmail.com",
