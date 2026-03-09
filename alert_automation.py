@@ -4,10 +4,10 @@ import os
 import datetime
 import smtplib
 from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from email.mime.multipart import MIMEMultipart  # import MIME 
 
 # Configuration
-STATE_FILE = "prev_versions.json"
+STATE_FILE = "prev_versions.json" # specify a file that will be created
 EMAIL_CONFIG = {
     "to": "ngetachew277@gmail.com",
     "user": "ngetachew277@gmail.com",
@@ -18,10 +18,10 @@ EMAIL_CONFIG = {
 
 # Source of Truth
 current_versions = {
-    "dnac": "2.3.7.7",
-    "ise": "3.4",
-    "ftd": "7.3.2.1",
-    "checkpoint": "R81"
+    "dnac": "2.3.5.5",
+    "ise": "3.4.0.608",
+    "ftd": "7.6.2.1",
+    "checkpoint": "R82"
 }
 
 def run(cmd):
